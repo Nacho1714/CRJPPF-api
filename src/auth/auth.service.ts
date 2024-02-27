@@ -1,5 +1,5 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { LoginUserDto, TokenUserDto } from './dto';
+import { LoginUserDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtPayload } from './interfaces';
 import { JwtService } from '@nestjs/jwt';

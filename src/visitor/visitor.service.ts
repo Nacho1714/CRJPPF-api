@@ -4,13 +4,11 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { CreateVisitorDto, FindVisitorDto, UpdateVisitorDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Visitor } from './entities/visitor.entity';
-import { PaginationDto } from '../common/dto/pagination.dto';
 import { UserService } from '../user/user.service';
 import { EmployeeService } from '../employee/employee.service';
 import { DirectorateHasSectorService } from '../directorate_has_sector/directorate_has_sector.service';
 import { ConfigService } from '@nestjs/config';
 import { getOptionQuery, getRecordsPerDay } from '../common/helpers/filter.helpers';
-// import moment from 'moment';
 import moment from 'moment-timezone';
 
 @Injectable()
@@ -182,7 +180,7 @@ export class VisitorService {
 
     getStaticVisitorImage(imageName: string) {
 
-        const path = join(__dirname, '../../static/visitor', imageName)
+        const path = join(this.configService.get('IMAGE_FOLDER_PATH'), imageName)
 
         if (!fs.existsSync(path)) throw new BadRequestException('Image not found')
 

@@ -5,8 +5,11 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { UserModule } from '../user/user.module';
 import { EmployeeModule } from '../employee/employee.module';
 import { DirectorateHasSectorModule } from '../directorate_has_sector/directorate_has_sector.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { fileFilter, fileName } from './helpers';
+import { diskStorage } from 'multer';
 
 @Module({
     imports: [
@@ -15,7 +18,18 @@ import { AuthModule } from '../auth/auth.module';
         EmployeeModule, 
         DirectorateHasSectorModule,
         ConfigModule,
-        AuthModule
+        AuthModule,
+        MulterModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                fileFilter: fileFilter,
+                storage: diskStorage({
+                    destination: configService.get('IMAGE_FOLDER_PATH'),
+                    filename: fileName
+                })
+            }),
+        })
     ],
     controllers: [VisitorController],
     providers: [VisitorService],

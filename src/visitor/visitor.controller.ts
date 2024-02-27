@@ -1,13 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Query, ParseIntPipe, UseInterceptors, UploadedFile, BadRequestException, ValidationPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, ParseIntPipe, UseInterceptors, UploadedFile, ValidationPipe, Res } from '@nestjs/common';
 import { VisitorService } from './visitor.service';
 import { CreateVisitorDto, UpdateVisitorDto, FindVisitorDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { fileFilter, fileName } from './helpers';
 import { Response } from 'express';
 import { Auth } from '../auth/decorators';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ParamIdPipeTsPipe } from '../common/pipes/param-id.pipe.ts.pipe';
+
 
 @ApiTags('Visitor')
 @Controller('visitor')
@@ -19,13 +18,7 @@ export class VisitorController {
      */
     @Auth()
     @Post()
-    @UseInterceptors(FileInterceptor('file', {
-        fileFilter: fileFilter,
-        storage: diskStorage({
-            destination: './static/visitor',
-            filename: fileName
-        })
-    }))
+    @UseInterceptors(FileInterceptor('file'))
     @ApiConsumes('multipart/form-data')
     create(
         @Body(new ValidationPipe()) createVisitorDto: CreateVisitorDto,
@@ -44,6 +37,7 @@ export class VisitorController {
     @Auth()
     @Get()
     findAll(@Query() findVisitorDto: FindVisitorDto)  {
+
         return this.visitorService.findAll(findVisitorDto)
     }
 
